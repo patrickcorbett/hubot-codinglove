@@ -25,7 +25,7 @@ Returns the comment and the gif in all cases.
 
 ## Installation
 
-Add the package `hubot-codinglove` as a dependency in your Hubot `package.json` file.
+Add the package `hubot-thecodinglovegifs` as a dependency in your Hubot `package.json` file.
 
     "dependencies": {
       "hubot-thecodinglovegifs": "0.3.0"
@@ -35,6 +35,6 @@ Run the following command to make sure the module is installed.
 
     $ npm install hubot-thecodinglovegifs
 
-To enable the script, add the `hubot-codinglove` entry to the `external-scripts.json` file (you may need to create this file).
+To enable the script, add the `hubot-thecodinglovegifs` entry to the `external-scripts.json` file (you may need to create this file).
 
     ["hubot-thecodinglovegifs"]
