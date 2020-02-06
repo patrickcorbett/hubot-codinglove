@@ -26,7 +26,7 @@ he = require('he')
 
 module.exports = (robot)->
   robot.respond /(donne moi de la )?joie( bordel)?/i, (message)->
-    send_random_meme message, 'http://lesjoiesducode.fr', (text)->
+    send_random_meme message, 'http://lesjoiesducode.fr/random', (text)->
       message.send text
   robot.respond /derni[èe]re joie/i, (message)->
     send_meme message, 'http://lesjoiesducode.fr', (text)->
@@ -38,8 +38,14 @@ module.exports = (robot)->
     send_meme message, 'http://thecodinglove.com', (text)->
       message.send text
 
+# set the initial link values for the random gif logic
+random_path = ""
+
 send_random_meme = (message, location, response_handler)->
+  # determine the url to use
   url = location
+  if location.indexOf('thecodinglove.com') > -1
+    url = if random_path then random_path else location
 
   message.http(url).get() (error, response, body)->
     return response_handler "Sorry, something went wrong" if error
@@ -47,10 +53,14 @@ send_random_meme = (message, location, response_handler)->
     if response.statusCode == 302 || response.statusCode == 301
       location = response.headers['location']
       return send_random_meme(message, location, response_handler)
+    
+    if location.indexOf('thecodinglove.com') > -1
+      random_path = get_random_link(body, "#randomPostBtn")
+      pageUrl = random_path
+    else 
+      pageUrl = location
 
-    random_path = get_random_link(body, ".fa-random")
-
-    send_meme(message, random_path, response_handler)
+    send_meme(message, pageUrl, response_handler)
 
 send_meme = (message, location, response_handler)->
   url = location
@@ -63,7 +73,7 @@ send_meme = (message, location, response_handler)->
       return send_meme(message, location, response_handler)
 
     img_src = get_meme_image(body, ".blog-post-content img", "src")
-
+    
     if(!img_src)
       img_src = get_meme_image(body, ".blog-post-content video object", "data")
 
